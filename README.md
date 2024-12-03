@@ -1,14 +1,14 @@
-# Hello, I'm CHANGEME
-<a href="https://linkedin.com"><img src="https://img.shields.io/badge/-LinkedIn-0072b1?&style=for-the-badge&logo=linkedin&logoColor=white" /></a>
+# Hello, I'm Lloyd Ensor Azumah
+<a href="www.linkedin.com/in/lloyd-ensor-azumah-4518b321a"><img src="https://img.shields.io/badge/-LinkedIn-0072b1?&style=for-the-badge&logo=linkedin&logoColor=white" /></a>
 
 [Brief Introduction - Remove this afterwards]
 
-I am a recent graduate with a profound interest in technology and a dedication to solving complex problems.
+I am a recent computer engineering graduate with hands-on experience in IT support.
 
 ## Objective
 [Provide Objective - Remove this afterwards]]
 
-My journey in computer science has led me to develop a passion for cybersecurity, and I am now eager to transition into this field, specifically aiming to join a Security Operations Center (SOC) as a Tier 1 Analyst.
+With a foundation in computer engineering, I've discovered a profound enthusiasm for cybersecurity because it aligns with my analytical mindset and problem-solving nature. I am eager to embark on a career in this space, with a clear focus on contributing to a Security Operation Center (SOC) as a Tier 1 Analyst, where i can play a critical role in safeguarding digital landscapes.
 
 ## Skills
 [Provide skills and associated project. Make sure to hyperlink the project - Remove this afterwards]]
