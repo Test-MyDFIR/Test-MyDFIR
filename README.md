@@ -1,14 +1,12 @@
-# Hello, I'm CHANGEME
-<a href="https://linkedin.com"><img src="https://img.shields.io/badge/-LinkedIn-0072b1?&style=for-the-badge&logo=linkedin&logoColor=white" /></a>
+# Hello, I'm Mohammed Umar Taqi
+<a href="https://www.linkedin.com/in/mohammed-umar-taqi"><img src="https://img.shields.io/badge/-LinkedIn-0072b1?&style=for-the-badge&logo=linkedin&logoColor=white" /></a>
 
-[Brief Introduction - Remove this afterwards]
 
-I am a recent graduate with a profound interest in technology and a dedication to solving complex problems.
+I am a network security professional with hands-on experience securing enterprise networks, now transitioning into a broader cybersecurity role. My background includes network hardening, traffic analysis, firewall management, and incident troubleshooting, providing a strong foundation for identifying and mitigating cyber threats. I am focused on expanding my expertise in areas such as threat detection, vulnerability management, and security operations to deliver comprehensive cybersecurity solutions.
 
 ## Objective
-[Provide Objective - Remove this afterwards]]
 
-My journey in computer science has led me to develop a passion for cybersecurity, and I am now eager to transition into this field, specifically aiming to join a Security Operations Center (SOC) as a Tier 1 Analyst.
+To leverage my strong foundation in network security and infrastructure protection while transitioning into cybersecurity specifically aiming to join Security Operation center (SOC) as a Tier 1 Analyst, where I can apply and expand my skills in threat detection, vulnerability management, incident response, and security operations to help protect organizations from evolving cyber threats.
 
 ## Skills
 [Provide skills and associated project. Make sure to hyperlink the project - Remove this afterwards]]
