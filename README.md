@@ -1,9 +1,9 @@
-# Hello, I'm CHANGEME
+# Hello, I'm Malithma Methnadee
 <a href="https://linkedin.com"><img src="https://img.shields.io/badge/-LinkedIn-0072b1?&style=for-the-badge&logo=linkedin&logoColor=white" /></a>
 
 [Brief Introduction - Remove this afterwards]
 
-I am a recent graduate with a profound interest in technology and a dedication to solving complex problems.
+I’m an undergraduate IT student soon to graduate, passionate about learning and exploring new technologies. My interests include cloud computing, networking, and cybersecurity. I enjoy building my skills through hands-on projects, certifications, and continuous learning to prepare for a career in the tech industry.
 
 ## Objective
 [Provide Objective - Remove this afterwards]]
