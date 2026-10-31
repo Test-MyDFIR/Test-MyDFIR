@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0a111c" />
+    <meta
+      name="description"
+      content="A focused security operations center workspace for monitoring alerts and investigations."
+    />
+    <title>Northstar SOC — Operations overview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Main navigation">
+        <a class="brand" href="#overview" aria-label="Northstar SOC home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none">
+              <path d="M16 3 28 10v12l-12 7L4 22V10L16 3Z" stroke="currentColor" stroke-width="1.5" />
+              <path d="m16 9 2.2 4.7L23 16l-4.8 2.2L16 23l-2.2-4.8L9 16l4.8-2.3L16 9Z" fill="currentColor" />
+            </svg>
+          </span>
+          <span class="brand-copy">
+            <strong>NORTHSTAR</strong>
+            <span>SECURITY OPERATIONS</span>
+          </span>
+        </a>
+
+        <div class="nav-label">WORKSPACE</div>
+        <nav class="primary-nav">
+          <a class="nav-link active" href="#overview" aria-current="page">
+            <span class="nav-icon" aria-hidden="true">◫</span> Overview
+          </a>
+          <a class="nav-link" href="#alert-queue">
+            <span class="nav-icon" aria-hidden="true">⌁</span> Alert queue
+            <span class="nav-count" id="nav-alert-count">08</span>
+          </a>
+          <a class="nav-link" href="#investigation">
+            <span class="nav-icon" aria-hidden="true">◎</span> Investigations
+          </a>
+          <a class="nav-link" href="#practice-lab">
+            <span class="nav-icon" aria-hidden="true">▣</span> Practice lab
+          </a>
+          <a class="nav-link" href="#telemetry">
+            <span class="nav-icon" aria-hidden="true">⌗</span> Telemetry
+          </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+          <div class="shift-card">
+            <div class="shift-heading">
+              <span class="status-dot"></span>
+              <span>SHIFT IN PROGRESS</span>
+            </div>
+            <div class="shift-person">
+              <span class="avatar avatar-you">JD</span>
+              <span><strong>Jordan Davis</strong><small>Tier 1 analyst</small></span>
+              <span class="shift-online" aria-label="Online"></span>
+            </div>
+            <div class="shift-foot"><span>Shift ends in</span><strong>04h 18m</strong></div>
+          </div>
+          <a class="profile-link" href="#overview">
+            <span class="profile-avatar">JD</span>
+            <span><strong>Jordan Davis</strong><small>Analyst profile</small></span>
+            <span class="profile-menu" aria-hidden="true">···</span>
+          </a>
+        </div>
+      </aside>
+
+      <main class="main-content" id="overview">
+        <header class="topbar">
+          <div class="breadcrumb"><span>Workspace</span><span class="crumb-separator">/</span><strong>Overview</strong></div>
+          <div class="topbar-right">
+            <div class="environment-pill"><span class="status-dot"></span> Practice simulation</div>
+            <div class="topbar-divider"></div>
+            <span class="utc-clock" id="utc-clock">--:--:-- UTC</span>
+            <button class="icon-button notification-button" type="button" aria-label="Notifications">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4" /></svg>
+              <span class="notification-dot"></span>
+            </button>
+            <span class="topbar-avatar" aria-label="Jordan Davis">JD</span>
+          </div>
+        </header>
+
+        <div class="page-content">
+          <section class="page-heading">
+            <div>
+              <div class="eyebrow"><span class="live-pulse"></span> SECURITY OPERATIONS CENTER <span class="eyebrow-separator">/</span> TIER 1</div>
+              <h1>Good morning, Jordan <span class="wave" aria-hidden="true">✳</span></h1>
+              <p class="page-subtitle">Here’s your security posture at a glance. Stay sharp.</p>
+            </div>
+            <div class="heading-actions">
+              <button class="button button-secondary" id="refresh-button" type="button">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M16.5 8A6.7 6.7 0 0 0 4 6.2L2.5 8M3 4v4h4M3.5 12a6.7 6.7 0 0 0 12.5 1.8l1.5-1.8M17 16v-4h-4" /></svg>
+                Refresh data
+              </button>
+              <button class="button button-primary" id="new-case-button" type="button">
+                <span aria-hidden="true">＋</span> New investigation
+              </button>
+            </div>
+          </section>
+
+          <section class="metrics-grid" aria-label="Security metrics">
+            <article class="metric-card">
+              <div class="metric-top"><span>ACTIVE ALERTS</span><span class="metric-icon icon-coral">⌁</span></div>
+              <div class="metric-value" id="metric-active">08</div>
+              <div class="metric-foot"><span class="metric-trend trend-up">↑ 12%</span><span>vs. last 24 hours</span></div>
+              <span class="metric-accent accent-coral"></span>
+            </article>
+            <article class="metric-card">
+              <div class="metric-top"><span>CRITICAL SEVERITY</span><span class="metric-icon icon-red">△</span></div>
+              <div class="metric-value" id="metric-critical">02</div>
+              <div class="metric-foot"><span class="metric-trend trend-down">↓ 1</span><span>vs. last 24 hours</span></div>
+              <span class="metric-accent accent-red"></span>
+            </article>
+            <article class="metric-card">
+              <div class="metric-top"><span>UNDER INVESTIGATION</span><span class="metric-icon icon-blue">◎</span></div>
+              <div class="metric-value" id="metric-investigating">03</div>
+              <div class="metric-foot"><span class="metric-trend trend-neutral" id="metric-assigned">2 assigned to you</span></div>
+              <span class="metric-accent accent-blue"></span>
+            </article>
+            <article class="metric-card">
+              <div class="metric-top"><span>MEAN TIME TO RESPOND</span><span class="metric-icon icon-green">◷</span></div>
+              <div class="metric-value">14<span class="metric-unit">m</span> 32<span class="metric-unit">s</span></div>
+              <div class="metric-foot"><span class="metric-trend trend-down">↓ 8.4%</span><span>vs. last 7 days</span></div>
+              <span class="metric-accent accent-green"></span>
+            </article>
+          </section>
+
+          <section class="panel practice-panel" id="practice-lab" aria-labelledby="practice-title">
+            <div class="panel-header practice-header">
+              <div>
+                <div class="panel-title-row"><h2 id="practice-title">Practice lab</h2><span class="practice-tag">SAFE SIMULATION</span></div>
+                <p class="panel-subtitle">Work through realistic Tier 1 decisions using fictional evidence. Nothing here connects to real systems.</p>
+              </div>
+              <div class="practice-progress-summary" id="practice-progress-summary"><strong>0 / 3</strong><span>scenarios completed</span></div>
+            </div>
+            <div class="practice-layout">
+              <div class="scenario-list" id="scenario-list" aria-label="Practice scenarios"></div>
+              <div class="practice-session" id="practice-session" aria-live="polite">
+                <div class="practice-welcome">
+                  <span class="welcome-icon" aria-hidden="true">◎</span>
+                  <h3>Build your triage instincts</h3>
+                  <p>Choose a scenario to review the evidence, make analyst decisions, and get immediate feedback with a clear rationale.</p>
+                  <div class="welcome-checklist"><span><i>01</i> Examine the incident context</span><span><i>02</i> Choose your next action</span><span><i>03</i> Learn from the explanation</span></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="overview-grid" aria-label="Alert overview and case details">
+            <article class="panel alert-panel" id="alert-queue">
+              <div class="panel-header">
+                <div>
+                  <div class="panel-title-row"><h2>Detection queue</h2><span class="queue-live"><span class="live-pulse"></span> LIVE</span></div>
+                  <p class="panel-subtitle">Prioritized alerts requiring analyst attention</p>
+                </div>
+                <button class="text-button" id="view-all-button" type="button">View all <span aria-hidden="true">→</span></button>
+              </div>
+              <div class="queue-controls">
+                <label class="search-box">
+                  <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.7" cy="8.7" r="5.6" /><path d="m13 13 4.2 4.2" /></svg>
+                  <input id="alert-search" type="search" placeholder="Search alerts, hosts, users..." autocomplete="off" />
+                  <kbd>/</kbd>
+                </label>
+                <div class="filter-group" role="group" aria-label="Filter alerts by status">
+                  <button class="filter-button selected" type="button" data-filter="all" aria-pressed="true">All <span id="filter-all-count">8</span></button>
+                  <button class="filter-button" type="button" data-filter="open" aria-pressed="false">Open</button>
+                  <button class="filter-button" type="button" data-filter="investigating" aria-pressed="false">Investigating</button>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table class="alert-table">
+                  <thead>
+                    <tr><th scope="col">ALERT</th><th scope="col">SEVERITY</th><th scope="col">ENTITY</th><th scope="col">SOURCE</th><th scope="col">FIRST SEEN</th><th scope="col">STATUS</th></tr>
+                  </thead>
+                  <tbody id="alert-rows"></tbody>
+                </table>
+                <div class="empty-state" id="empty-state" hidden>
+                  <span class="empty-icon">⌕</span>
+                  <strong>No alerts match</strong>
+                  <span>Try a different search or status filter.</span>
+                </div>
+              </div>
+              <div class="table-footer"><span id="table-result-count">Showing 8 alerts</span><span class="data-source"><span class="source-dot"></span> Data synced 12 sec ago</span></div>
+            </article>
+
+            <article class="panel investigation-panel" id="investigation">
+              <div class="panel-header investigation-header">
+                <div>
+                  <div class="panel-title-row"><h2>Investigation</h2><span class="case-id" id="case-id">INC-2847</span></div>
+                  <p class="panel-subtitle">Selected alert details</p>
+                </div>
+                <button class="icon-button more-button" type="button" aria-label="More investigation options">···</button>
+              </div>
+              <div class="case-content" id="case-content"></div>
+              <div class="case-actions" id="case-actions"></div>
+            </article>
+          </section>
+
+          <section class="lower-grid" id="telemetry" aria-label="Security telemetry and analyst activity">
+            <article class="panel telemetry-panel">
+              <div class="panel-header">
+                <div><h2>Detection activity</h2><p class="panel-subtitle">Alert volume across monitored sources</p></div>
+                <button class="period-button" type="button" aria-label="Showing last 24 hours">Last 24 hours <span aria-hidden="true">⌄</span></button>
+              </div>
+              <div class="chart-summary"><strong>128</strong><span>alerts detected</span><span class="chart-trend">↑ 6.2%</span></div>
+              <div class="activity-chart" role="img" aria-label="Bar chart showing alert volume over 24 hours, peaking at 14:00 UTC">
+                <div class="chart-y-labels"><span>30</span><span>20</span><span>10</span><span>0</span></div>
+                <div class="chart-plot">
+                  <div class="chart-gridline line-one"></div><div class="chart-gridline line-two"></div><div class="chart-gridline line-three"></div>
+                  <div class="chart-bars" aria-hidden="true">
+                    <span style="--bar:24%"></span><span style="--bar:30%"></span><span style="--bar:18%"></span><span style="--bar:38%"></span><span style="--bar:27%"></span><span style="--bar:45%"></span>
+                    <span style="--bar:33%"></span><span style="--bar:50%"></span><span style="--bar:42%"></span><span style="--bar:62%"></span><span style="--bar:48%"></span><span style="--bar:72%"></span>
+                    <span class="bar-highlight" style="--bar:91%"></span><span style="--bar:65%"></span><span style="--bar:56%"></span><span style="--bar:76%"></span><span style="--bar:61%"></span><span style="--bar:44%"></span>
+                    <span style="--bar:53%"></span><span style="--bar:40%"></span><span style="--bar:34%"></span><span style="--bar:47%"></span><span style="--bar:29%"></span><span style="--bar:36%"></span>
+                  </div>
+                  <div class="chart-x-labels"><span>00:00</span><span>04:00</span><span>08:00</span><span>12:00</span><span>16:00</span><span>20:00</span><span>Now</span></div>
+                </div>
+              </div>
+              <div class="chart-legend"><span><i class="legend-square"></i> Detections</span><span><i class="legend-square legend-highlight"></i> Selected alert</span></div>
+            </article>
+
+            <article class="panel activity-panel">
+              <div class="panel-header">
+                <div><h2>Analyst activity</h2><p class="panel-subtitle">Recent actions across your team</p></div>
+                <button class="text-button" type="button">Activity log <span aria-hidden="true">→</span></button>
+              </div>
+              <div class="activity-list">
+                <div class="activity-item"><span class="activity-avatar activity-purple">MC</span><div class="activity-copy"><p><strong>Maya Chen</strong> escalated <a href="#alert-queue" data-alert-link="a-003">INC-2845</a> to Tier 2</p><span>12 min ago <i>·</i> Escalation</span></div><span class="activity-marker marker-purple"></span></div>
+                <div class="activity-item"><span class="activity-avatar activity-blue">JD</span><div class="activity-copy"><p><strong>You</strong> started investigating <a href="#alert-queue" data-alert-link="a-001">INC-2847</a></p><span>28 min ago <i>·</i> Investigation</span></div><span class="activity-marker marker-blue"></span></div>
+                <div class="activity-item"><span class="activity-avatar activity-amber">AR</span><div class="activity-copy"><p><strong>Alex Rivera</strong> resolved <a href="#alert-queue" data-alert-link="a-008">INC-2839</a></p><span>41 min ago <i>·</i> Resolution</span></div><span class="activity-marker marker-green"></span></div>
+                <div class="activity-item"><span class="activity-avatar activity-teal">SK</span><div class="activity-copy"><p><strong>Sam Kim</strong> acknowledged suspicious login</p><span>1 hr ago <i>·</i> Acknowledgment</span></div><span class="activity-marker marker-amber"></span></div>
+              </div>
+              <div class="activity-footer"><span class="team-presence"><i></i><i></i><i></i><b>+4</b></span><span>7 analysts active on shift</span></div>
+            </article>
+          </section>
+
+          <footer class="page-footer"><span>Northstar Security Operations</span><span>DEMO ENVIRONMENT <i>·</i> Sample data for interface demonstration</span></footer>
+        </div>
+      </main>
+    </div>
+    <dialog class="new-case-dialog" id="new-case-dialog" aria-labelledby="new-case-title">
+      <form id="new-case-form">
+        <div class="dialog-heading">
+          <div><span class="eyebrow">CASE MANAGEMENT</span><h2 id="new-case-title">Create investigation</h2></div>
+          <button class="icon-button dialog-close" type="button" aria-label="Close dialog">×</button>
+        </div>
+        <p class="dialog-description">Open a case for an event that needs analyst review.</p>
+        <label class="form-field">Alert title<input name="title" type="text" maxlength="100" placeholder="Describe the event" required /></label>
+        <div class="form-row">
+          <label class="form-field">Severity
+            <select name="severity"><option>Critical</option><option selected>High</option><option>Medium</option><option>Low</option></select>
+          </label>
+          <label class="form-field">Entity<input name="entity" type="text" maxlength="64" placeholder="Host or user" required /></label>
+        </div>
+        <div class="dialog-actions">
+          <button class="button button-secondary" type="button" data-dialog-cancel>Cancel</button>
+          <button class="button button-primary" type="submit">Create investigation</button>
+        </div>
+      </form>
+    </dialog>
+    <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+  </body>
+</html>
