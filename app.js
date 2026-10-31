@@ -65,15 +65,278 @@ const alerts = [
   }
 ];
 
-const state = { filter: "all", query: "", selectedId: "a-001" };
+const practiceScenarios = [
+  {
+    id: "suspicious-sign-in",
+    category: "Identity",
+    title: "Suspicious sign-in",
+    level: "Foundations",
+    duration: "5 min",
+    objective: "Triage a potentially compromised service account without jumping to conclusions.",
+    evidence: "svc-backup-02 has 17 failed sign-in attempts followed by a successful login from Frankfurt. Its usual sign-ins come from a managed server in London. MFA was satisfied.",
+    steps: [
+      {
+        question: "What is the best first step to validate this alert?",
+        answers: [
+          "Compare the sign-in, device, MFA, and source details with the account's known baseline and related identity events.",
+          "Close the alert because the user passed MFA.",
+          "Block the source IP immediately and stop investigating."
+        ],
+        correct: 0,
+        feedback: "Start by corroborating the signal. A successful MFA challenge does not rule out a compromised session, and a single IP block can miss other activity or disrupt legitimate traffic."
+      },
+      {
+        question: "The source and device are unfamiliar, and the account owner does not recognize the login. What does that indicate?",
+        answers: [
+          "Treat it as a likely false positive because service accounts can travel.",
+          "Treat the account as potentially compromised, preserve the identity evidence, and escalate through the identity incident process.",
+          "Run a password-guessing test against the account to see whether the password is weak."
+        ],
+        correct: 1,
+        feedback: "The unrecognized login plus an unusual failure pattern is a strong compromise signal. Preserve the sign-in and MFA records, and use your organization's escalation path rather than performing tests against the account."
+      },
+      {
+        question: "The identity responder confirms the login is unauthorized. Which response is most appropriate?",
+        answers: [
+          "Follow the approved identity playbook to revoke active sessions and rotate the credential, then scope related activity.",
+          "Delete all sign-in records so the account can be restored cleanly.",
+          "Wait for another alert before taking action."
+        ],
+        correct: 0,
+        feedback: "Once unauthorized access is confirmed, contain it with approved identity controls, preserve evidence, and scope the account's activity. Document the actions and keep the incident owner informed."
+      }
+    ]
+  },
+  {
+    id: "suspicious-process",
+    category: "Endpoint",
+    title: "Suspicious process chain",
+    level: "Foundations",
+    duration: "6 min",
+    objective: "Assess an endpoint alert safely using recorded telemetry before deciding how to contain it.",
+    evidence: "A user opened a macro-enabled invoice document. Endpoint telemetry shows WINWORD.EXE spawning PowerShell with an encoded command line. The agent reports that the child process was blocked; no follow-on network event is shown.",
+    steps: [
+      {
+        question: "Which evidence should you review first in the endpoint console?",
+        answers: [
+          "The recorded process tree, command-line metadata, detection details, and whether the endpoint actually blocked the child process.",
+          "Open the attachment on your own workstation to see what it does.",
+          "Assume the host is fully compromised because PowerShell appeared."
+        ],
+        correct: 0,
+        feedback: "Use the endpoint's recorded telemetry to validate process ancestry and prevention status. Do not execute a suspicious attachment; an alert alone is not proof of successful execution."
+      },
+      {
+        question: "The process was blocked. What should you check before deciding the incident is contained?",
+        answers: [
+          "Review surrounding endpoint events for other child processes, persistence indicators, or follow-on activity; validate the document's origin through approved tools.",
+          "Ask the user to forward the document to your personal email.",
+          "Disable endpoint protection so the process can be reproduced."
+        ],
+        correct: 0,
+        feedback: "Confirm what was prevented and look for related activity in the same time window. Keep suspicious files within approved analysis tooling and never weaken endpoint protection to reproduce an event."
+      },
+      {
+        question: "The block succeeded, no follow-on activity is present, and the document came from an unsolicited external email. What is the sound next step?",
+        answers: [
+          "Document the evidence, follow the process for reporting or quarantining the message, and check whether other recipients received it.",
+          "Declare a confirmed host takeover and wipe every workstation in the department.",
+          "Ignore the event because the block succeeded."
+        ],
+        correct: 0,
+        feedback: "A successful block reduces immediate risk but still warrants documenting the alert, handling the message through approved controls, and checking scope. Escalate or isolate only if the evidence and response playbook support it."
+      }
+    ]
+  },
+  {
+    id: "mailbox-rule",
+    category: "Cloud identity",
+    title: "Unexpected mailbox rule",
+    level: "Intermediate",
+    duration: "5 min",
+    objective: "Investigate a suspicious forwarding rule and verify the account activity safely.",
+    evidence: "A new inbox rule forwards invoice-related messages to an external address. The rule was created shortly after a successful sign-in from an unfamiliar location. The mailbox owner has not yet been contacted.",
+    steps: [
+      {
+        question: "What should you correlate before deciding whether the rule is malicious?",
+        answers: [
+          "The rule audit event, sign-in context, session and MFA records, and any approved change or forwarding request.",
+          "Only the display name of the external recipient.",
+          "The mailbox contents by sending a test message to the external address."
+        ],
+        correct: 0,
+        feedback: "Correlate the rule's audit trail with authentication and approved business changes. Avoid sending data to the external address as a test."
+      },
+      {
+        question: "How should you verify whether the mailbox owner created the rule?",
+        answers: [
+          "Contact the owner using a known, independent channel and ask them to confirm the change.",
+          "Reply to the potentially affected mailbox and trust any response.",
+          "Post the user's sign-in details in a public team channel."
+        ],
+        correct: 0,
+        feedback: "Use a previously verified channel that does not depend on the possibly compromised mailbox. Share only the incident details needed with authorized responders."
+      },
+      {
+        question: "The owner denies creating the rule and there is no approved change. What should you do?",
+        answers: [
+          "Preserve the audit evidence, escalate, and use the approved identity playbook to remove the rule and revoke affected sessions.",
+          "Delete the rule and close the case without recording what happened.",
+          "Keep the rule active until an external recipient reports a problem."
+        ],
+        correct: 0,
+        feedback: "An unrecognized rule with suspicious authentication context is a credible account-compromise indicator. Preserve evidence, notify the incident owner, and contain using approved identity controls."
+      }
+    ]
+  }
+];
+
+const state = {
+  filter: "all",
+  query: "",
+  selectedId: "a-001",
+  practice: { scenarioId: null, stepIndex: 0, correctAnswers: 0, answered: false, selectedAnswer: null, completedScores: {} }
+};
 let nextIncidentNumber = 2848;
 const rowsElement = document.querySelector("#alert-rows");
 const caseContent = document.querySelector("#case-content");
 const caseActions = document.querySelector("#case-actions");
+const scenarioList = document.querySelector("#scenario-list");
+const practiceSession = document.querySelector("#practice-session");
 
 const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
 })[character]);
+
+function renderScenarioList() {
+  const { scenarioId, completedScores } = state.practice;
+  document.querySelector("#practice-progress-summary").innerHTML =
+    `<strong>${Object.keys(completedScores).length} / ${practiceScenarios.length}</strong><span>scenarios completed this session</span>`;
+  scenarioList.innerHTML = practiceScenarios.map((scenario) => {
+    const bestScore = completedScores[scenario.id];
+    return `<button class="scenario-card ${scenario.id === scenarioId ? "selected" : ""}" type="button" data-scenario-id="${scenario.id}" aria-pressed="${scenario.id === scenarioId}">
+      <span class="scenario-card-top"><span class="scenario-category">${escapeHtml(scenario.category)}</span>${bestScore === undefined ? "" : `<span class="scenario-score">Best ${bestScore}/${scenario.steps.length}</span>`}</span>
+      <strong>${escapeHtml(scenario.title)}</strong>
+      <span class="scenario-card-meta">${escapeHtml(scenario.level)} <span aria-hidden="true">·</span> ${escapeHtml(scenario.duration)}</span>
+    </button>`;
+  }).join("");
+}
+
+function renderPracticeSession() {
+  const scenario = practiceScenarios.find((item) => item.id === state.practice.scenarioId);
+  if (!scenario) {
+    practiceSession.innerHTML = `
+      <div class="practice-welcome">
+        <span class="welcome-icon" aria-hidden="true">◎</span>
+        <h3>Build your triage instincts</h3>
+        <p>Choose a scenario to review the evidence, make analyst decisions, and get immediate feedback with a clear rationale.</p>
+        <div class="welcome-checklist"><span><i>01</i> Examine the incident context</span><span><i>02</i> Choose your next action</span><span><i>03</i> Learn from the explanation</span></div>
+      </div>`;
+    return;
+  }
+
+  const practice = state.practice;
+  if (practice.stepIndex >= scenario.steps.length) {
+    const percentage = Math.round((practice.correctAnswers / scenario.steps.length) * 100);
+    practiceSession.innerHTML = `
+      <div class="practice-result">
+        <span class="scenario-category">SCENARIO COMPLETE · ${escapeHtml(scenario.category.toUpperCase())}</span>
+        <h3>${escapeHtml(scenario.title)}</h3>
+        <div class="result-score">${practice.correctAnswers}<span> / ${scenario.steps.length} correct</span></div>
+        <p>${percentage === 100
+          ? "Excellent work. You chose a safe, evidence-led response at every decision point."
+          : percentage >= 67
+            ? "Good progress. Review the explanations above the decisions you missed, then replay to reinforce the response sequence."
+            : "Practice is how good triage habits form. Review the evidence and explanations, then try the scenario again."}</p>
+        <div class="result-actions">
+          <button class="button button-primary" type="button" data-practice-action="retry">Practice again</button>
+          <button class="button button-secondary" type="button" data-practice-action="choose">Choose another scenario</button>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const step = scenario.steps[practice.stepIndex];
+  const progress = Math.round(((practice.stepIndex + 1) / scenario.steps.length) * 100);
+  const feedback = practice.answered
+    ? `<div class="practice-feedback ${practice.selectedAnswer === step.correct ? "feedback-correct" : "feedback-incorrect"}" role="status">
+        <strong>${practice.selectedAnswer === step.correct ? "Good call" : `Review this decision · best answer: ${String.fromCharCode(65 + step.correct)}`}</strong>
+        ${escapeHtml(step.feedback)}
+      </div>`
+    : "";
+  const answers = step.answers.map((answer, index) => {
+    const answerClass = practice.answered
+      ? index === step.correct ? "is-correct" : index === practice.selectedAnswer ? "is-incorrect" : ""
+      : "";
+    return `<button class="answer-option ${answerClass}" type="button" data-answer-index="${index}" aria-pressed="${practice.selectedAnswer === index}" ${practice.answered ? "disabled" : ""}>
+      <span class="answer-letter">${String.fromCharCode(65 + index)}</span><span>${escapeHtml(answer)}</span>
+    </button>`;
+  }).join("");
+
+  practiceSession.innerHTML = `
+    <div class="practice-run-header">
+      <div><h3 class="practice-run-title">${escapeHtml(scenario.title)}</h3><div class="practice-run-meta">${escapeHtml(scenario.level)} <span aria-hidden="true">·</span> Decision ${practice.stepIndex + 1} of ${scenario.steps.length}</div></div>
+      <button class="practice-reset" type="button" data-practice-action="choose">Exit scenario</button>
+    </div>
+    <div class="practice-step-progress" role="progressbar" aria-label="Scenario progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress}"><span style="width:${progress}%"></span></div>
+    <div class="scenario-evidence"><div class="scenario-evidence-label">SCENARIO BRIEF</div><p>${escapeHtml(scenario.evidence)}</p></div>
+    <p class="practice-question">${escapeHtml(step.question)}</p>
+    <div class="answer-options" role="group" aria-label="Choose the best analyst response">${answers}</div>
+    ${feedback}
+    ${practice.answered ? `<div class="practice-next-row"><span class="practice-shortcut">${practice.correctAnswers} correct so far</span><button class="button button-primary practice-next" type="button" data-practice-action="next">${practice.stepIndex === scenario.steps.length - 1 ? "Review scenario" : "Next decision"} →</button></div>` : '<div class="practice-next-row"><span class="practice-shortcut">Select the best response. You will see the rationale right away.</span></div>'}`;
+}
+
+function startPracticeScenario(id) {
+  if (!practiceScenarios.some((scenario) => scenario.id === id)) return;
+  state.practice.scenarioId = id;
+  state.practice.stepIndex = 0;
+  state.practice.correctAnswers = 0;
+  state.practice.answered = false;
+  state.practice.selectedAnswer = null;
+  renderScenarioList();
+  renderPracticeSession();
+}
+
+function answerPracticeQuestion(index) {
+  const scenario = practiceScenarios.find((item) => item.id === state.practice.scenarioId);
+  const step = scenario?.steps[state.practice.stepIndex];
+  if (!step || state.practice.answered || !Number.isInteger(index) || index < 0 || index >= step.answers.length) return;
+  state.practice.answered = true;
+  state.practice.selectedAnswer = index;
+  if (index === step.correct) state.practice.correctAnswers += 1;
+  renderPracticeSession();
+}
+
+function advancePractice() {
+  const scenario = practiceScenarios.find((item) => item.id === state.practice.scenarioId);
+  if (!scenario || !state.practice.answered) return;
+  if (state.practice.stepIndex === scenario.steps.length - 1) {
+    const previousBest = state.practice.completedScores[scenario.id] ?? 0;
+    state.practice.completedScores[scenario.id] = Math.max(previousBest, state.practice.correctAnswers);
+    renderScenarioList();
+    state.practice.stepIndex += 1;
+  } else {
+    state.practice.stepIndex += 1;
+    state.practice.answered = false;
+    state.practice.selectedAnswer = null;
+  }
+  renderPracticeSession();
+}
+
+function handlePracticeAction(action) {
+  if (action === "next") {
+    advancePractice();
+  } else if (action === "retry") {
+    startPracticeScenario(state.practice.scenarioId);
+  } else if (action === "choose") {
+    state.practice.scenarioId = null;
+    state.practice.stepIndex = 0;
+    state.practice.answered = false;
+    state.practice.selectedAnswer = null;
+    renderScenarioList();
+    renderPracticeSession();
+  }
+}
 
 function renderAlerts() {
   const filtered = alerts.filter((alert) => {
@@ -135,6 +398,20 @@ function renderCase() {
     caseActions.innerHTML = '<button class="button button-secondary" type="button" data-action="assign">Assign to me</button><button class="button button-primary" type="button" data-action="investigate">Start investigation</button>';
   }
 }
+
+scenarioList.addEventListener("click", (event) => {
+  const card = event.target.closest("[data-scenario-id]");
+  if (card) startPracticeScenario(card.dataset.scenarioId);
+});
+practiceSession.addEventListener("click", (event) => {
+  const answer = event.target.closest("[data-answer-index]");
+  if (answer) {
+    answerPracticeQuestion(Number(answer.dataset.answerIndex));
+    return;
+  }
+  const action = event.target.closest("[data-practice-action]")?.dataset.practiceAction;
+  if (action) handlePracticeAction(action);
+});
 
 function selectAlert(id) {
   if (!alerts.some((alert) => alert.id === id)) return;
@@ -314,5 +591,7 @@ function updateClock() {
 
 updateClock();
 window.setInterval(updateClock, 1000);
+renderScenarioList();
+renderPracticeSession();
 renderAlerts();
 renderCase();

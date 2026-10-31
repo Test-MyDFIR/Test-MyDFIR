@@ -46,6 +46,9 @@
           <a class="nav-link" href="#investigation">
             <span class="nav-icon" aria-hidden="true">◎</span> Investigations
           </a>
+          <a class="nav-link" href="#practice-lab">
+            <span class="nav-icon" aria-hidden="true">▣</span> Practice lab
+          </a>
           <a class="nav-link" href="#telemetry">
             <span class="nav-icon" aria-hidden="true">⌗</span> Telemetry
           </a>
@@ -76,7 +79,7 @@
         <header class="topbar">
           <div class="breadcrumb"><span>Workspace</span><span class="crumb-separator">/</span><strong>Overview</strong></div>
           <div class="topbar-right">
-            <div class="environment-pill"><span class="status-dot"></span> Production environment</div>
+            <div class="environment-pill"><span class="status-dot"></span> Practice simulation</div>
             <div class="topbar-divider"></div>
             <span class="utc-clock" id="utc-clock">--:--:-- UTC</span>
             <button class="icon-button notification-button" type="button" aria-label="Notifications">
@@ -130,6 +133,27 @@
               <div class="metric-foot"><span class="metric-trend trend-down">↓ 8.4%</span><span>vs. last 7 days</span></div>
               <span class="metric-accent accent-green"></span>
             </article>
+          </section>
+
+          <section class="panel practice-panel" id="practice-lab" aria-labelledby="practice-title">
+            <div class="panel-header practice-header">
+              <div>
+                <div class="panel-title-row"><h2 id="practice-title">Practice lab</h2><span class="practice-tag">SAFE SIMULATION</span></div>
+                <p class="panel-subtitle">Work through realistic Tier 1 decisions using fictional evidence. Nothing here connects to real systems.</p>
+              </div>
+              <div class="practice-progress-summary" id="practice-progress-summary"><strong>0 / 3</strong><span>scenarios completed</span></div>
+            </div>
+            <div class="practice-layout">
+              <div class="scenario-list" id="scenario-list" aria-label="Practice scenarios"></div>
+              <div class="practice-session" id="practice-session" aria-live="polite">
+                <div class="practice-welcome">
+                  <span class="welcome-icon" aria-hidden="true">◎</span>
+                  <h3>Build your triage instincts</h3>
+                  <p>Choose a scenario to review the evidence, make analyst decisions, and get immediate feedback with a clear rationale.</p>
+                  <div class="welcome-checklist"><span><i>01</i> Examine the incident context</span><span><i>02</i> Choose your next action</span><span><i>03</i> Learn from the explanation</span></div>
+                </div>
+              </div>
+            </div>
           </section>
 
           <section class="overview-grid" aria-label="Alert overview and case details">
